@@ -83,6 +83,7 @@ function posts(state = {'posts':[],'filter_posts':[], 'current_post':{},'comment
     }
 
     case 'UPVOTE_POST':
+    case 'DOWNVOTE_POST':
     //updat the upvoted post.
 
     //specific object
@@ -90,12 +91,21 @@ function posts(state = {'posts':[],'filter_posts':[], 'current_post':{},'comment
 
     return {
       ...state,
-      'posts': state.posts.filter(post =>
+      'posts': state.posts.map(post =>
         post.id === action.post.id ?
           {...post, voteScore: action.post.voteScore} :
           post
         )
     }
+
+    case 'DELETE_POST':
+    //filter return true or false.
+    return{
+      ...state,
+      'posts': state.posts.filter(post =>
+        post.id === action.post_id ?
+        null: post
+    )}
 
 
     default:

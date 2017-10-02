@@ -7,6 +7,8 @@ const GET_ALL_COMMENTS_BY_POST = "GET_ALL_COMMENTS_BY_POST";
 const GET_CURRENT_POST = "GET_CURRENT_POST";
 const ADD_COMMENT = "ADD_COMMENT";
 const UPVOTE_POST = "UPVOTE_POST";
+const DOWNVOTE_POST = "DOWNVOTE_POST";
+const DELETE_POST = "DELETE_POST";
 
 export function get_all_posts(posts) {
   return ({
@@ -93,5 +95,46 @@ export const upvote_post_api = (post_id) => dispatch => {
         console.log("Updated Post",post);
         dispatch(upvote_post(post))
       })
+  )
+}
+
+
+export function downvote_post_success(updated_post){
+  return({
+    type: DOWNVOTE_POST,
+    post: updated_post
+  })
+}
+
+export const downvote_post_request = (post_id) => dispatch => {
+  return(
+    ReadableAPI
+      .downVotePost(post_id)
+      .then(post => {
+        console.log("Updated Post",post);
+        dispatch(downvote_post_success(post))
+      })
+  )
+}
+
+
+export function delete_post_success(post_id){
+  return({
+    type: DELETE_POST,
+    post_id
+  })
+
+}
+
+export const delete_post_request = (post_id) => dispatch => {
+  return(
+    ReadableAPI
+      .deletePost(post_id)
+      .then(post => {
+        if(post.deleted === true){
+          dispatch(delete_post_success(post.id))
+        }
+      })
+
   )
 }

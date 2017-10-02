@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {getAllPosts, getAllPostsByCategory} from '../api/readable';
-import {get_all_posts, get_all_posts_by_category, post_order_by,fetch_all_posts} from '../actions';
+import {get_all_posts, get_all_posts_by_category, post_order_by,fetch_all_posts, upvote_post_api, downvote_post_request, delete_post_request } from '../actions';
 import { push} from 'react-router-redux';
 import {Link} from 'react-router-dom';
 import PostListItem from './postListItem';
@@ -15,6 +15,7 @@ class Home extends Component{
     this.handleChangeCategory = this.handleChangeCategory.bind(this);
     this.handleChangeOrderBy = this.handleChangeOrderBy.bind(this);
     this.linkTo = this.linkTo.bind(this);
+
   //  this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -22,6 +23,7 @@ class Home extends Component{
     console.log("LInk to ",e);
   //  this.props.dispatch(push(`/post/${post_id}`))
   }
+
 
   handleChangeCategory(e){
     //console.log(e);
@@ -88,8 +90,6 @@ class Home extends Component{
           <option value="timestamp">Time</option>
         </select>
 
-        <PostListItem listItem={this.state.selectCategory}/>
-
 
         {
           this.props.filter_posts.length > 0 ?
@@ -100,19 +100,27 @@ class Home extends Component{
 
           <ul >
             {
-              this.props.filter_posts.map(function(post,index){
+              this.props.posts.map((post,index) => {
 
                 let linkPost = `/post/${post.id}`;
                 return(
+
+                  (post.category === this.state.selectCategory || this.state.selectCategory === "all")?
                     <li key={post.id}><Link to={linkPost} >{post.title}</Link>
+                    <button>o</button>
+                    <button onClick={() => this.props.dispatch(delete_post_request(post.id))}>x</button>
                       <ul>
                         <li>category: {post.category}</li>
                         <li>timestamp: {post.timestamp}</li>
-                        <li>voteScore: {post.voteScore}</li>
+                        <li><button onClick={() => this.props.dispatch(downvote_post_request(post.id))}>-</button>
+                        {post.voteScore}
+                         <button onClick={() => this.props.dispatch(upvote_post_api(post.id))}>+</button>
+                       </li>
 
                       </ul>
                     </li>
-                )
+                    : null
+                  )
               })
             }
           </ul>
@@ -130,11 +138,11 @@ class Home extends Component{
 
 }
 
-
 const mapStateToProps = (state, props) => ({
   posts: state.posts.posts,
   filter_posts: state.posts.filter_posts
 })
+
 
 
 export default connect(mapStateToProps)(Home);

@@ -80,3 +80,21 @@ export function upVotePost(post_id){
       .then((data) => {console.log("Success",data); return data.json()})
   )
 }
+
+export function downVotePost(post_id){
+  let payload = {
+    "option": "downVote"
+  }
+
+  return(
+    fetch(`${api}/posts/${post_id}`,{method:"POST",headers,body:JSON.stringify(payload)})
+      .then((data) => {console.log("Success",data); return data.json()})
+  )
+}
+
+export function deletePost(post_id){
+  return(
+    fetch(`${api}/posts/${post_id}`,{method:"DELETE",headers})
+      .then((data) => {console.log("Success DELETE",data); return data.json()})
+  )
+}
